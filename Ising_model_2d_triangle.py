@@ -54,7 +54,7 @@ def flip(xup,yup,xdown,ydown,spins,energy,mag):
                     + spins[xdown, ydown]*sum_neighbors(spins, xdown, ydown, r, c)) \
             -2*h*(spins[xup, yup] + spins[xdown, ydown])
     if (xdown, ydown) in find_neighbors(xup, yup, r, c):
-        deltaE -= 2*eps*spins[xup, yup]*spins[xdown, ydown]
+        deltaE -= 4*eps*spins[xup, yup]*spins[xdown, ydown]
     
     if np.random.rand() < np.exp(-beta*deltaE):
         spins[xup, yup] *= -1
