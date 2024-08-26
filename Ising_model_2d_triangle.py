@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.patches import RegularPolygon
+from matplotlib.collections import PatchCollection
 #import numba
 
 # kB Temperature
@@ -63,7 +65,7 @@ def flip(xup,yup,xdown,ydown,spins,energy,mag):
         mag += spins[xup, yup] + spins[xdown, ydown]
     return spins, energy, mag
 
-nsteps = 50000
+nsteps = 100000
 nstat = 20
 
 t_energy = np.zeros(nsteps)
@@ -76,10 +78,19 @@ imflag = 1
 if imflag:
     fig, ax = plt.subplots(1,1)
     ax.set_aspect('equal')
-    ax.set_xlim(-0.5, c-0.5)
-    ax.set_ylim(-0.5, r-0.5)
+    ax.axis('off')
+    ax.set_xlim(-0.5, c+0.5)
+    ax.set_ylim(-1.0, r+0.5)
     plt.setp(ax, xticks=[], yticks=[])
-    img = ax.imshow(spins,cmap='winter',interpolation='None')
+    patches = []
+    for i, x in enumerate(range(c)):
+        for j, y in enumerate(range(r)):
+            point = [i+0.5, j] if j % 2 == 0 else [i, j]
+            hexagon = RegularPolygon(point, numVertices=6, radius=0.6, edgecolor='k')
+            patches.append(hexagon)
+    collection = PatchCollection(patches, cmap='plasma')
+    ax.add_collection(collection)
+    collection.set_array(spins.T.ravel())
     plt.draw()
 
 print ()
@@ -97,7 +108,7 @@ for step in range(nsteps):
     t_mag[step] = mag
     if step % nstat == 0 and step > 0:
         if imflag:
-            img.set_data(spins)
+            collection.set_array(spins.T.ravel())
             fig.canvas.draw()
             plt.pause(0.01)
         print("%d \t %.4f \t %.4f \t %.4f \t %.4f" % (step, energy/N, np.mean(t_energy[:step])/N, t_mag[step]/N, np.mean(t_mag[:step])/N))
