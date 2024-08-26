@@ -38,7 +38,7 @@ def get_energy(spins,r,c):
     energy = 0
     for i in range(r):
         for j in range(c):
-            energy += eps/4*spins[i, j]*sum_neighbors(spins, i, j, r, c)/2 + h*spins[i, j]
+            energy += eps*spins[i, j]*sum_neighbors(spins, i, j, r, c)/2 + h*spins[i, j]
     return energy
 
 def monte_carlo(spins, energy, mag):
@@ -50,11 +50,11 @@ def monte_carlo(spins, energy, mag):
     return spins, energy, mag
 
 def flip(xup,yup,xdown,ydown,spins,energy,mag):
-    deltaE = -2*eps/4*(spins[xup, yup]*sum_neighbors(spins, xup, yup, r, c) \
+    deltaE = -2*eps*(spins[xup, yup]*sum_neighbors(spins, xup, yup, r, c) \
                     + spins[xdown, ydown]*sum_neighbors(spins, xdown, ydown, r, c)) \
             -2*h*(spins[xup, yup] + spins[xdown, ydown])
     if (xdown, ydown) in find_neighbors(xup, yup, r, c):
-        deltaE -= 4*eps/4*spins[xup, yup]*spins[xdown, ydown]
+        deltaE -= 4*eps*spins[xup, yup]*spins[xdown, ydown]
     
     if np.random.rand() < np.exp(-beta*deltaE):
         spins[xup, yup] *= -1
@@ -95,7 +95,7 @@ for step in range(nsteps):
     spins, energy, mag = monte_carlo(spins, energy, mag)
     t_energy[step] = energy
     t_mag[step] = mag
-    if step % nstat == 0:
+    if step % nstat == 0 and step > 0:
         if imflag:
             img.set_data(spins)
             fig.canvas.draw()
