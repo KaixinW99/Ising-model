@@ -6,7 +6,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description='2D Ising model in triangle lattice with equal number of up and down spins')
 parser.add_argument('-im', action='store_true', help='Show the animation of the spins')
-parser.add_argument('-calc_C_OH', action='store_true', help='Calculate the number of OH bonds')
+parser.add_argument('-calc_C_OH', action='store_true', help='Calculate the number of straight OH bonds sourrounding each OH bond')
 parser.add_argument('-T', type=float, default=273, help='Temperature in K')
 parser.add_argument('-r', type=int, default=20, help='Number of rows in the lattice')
 parser.add_argument('-c', type=int, default=20, help='Number of columns in the lattice')
